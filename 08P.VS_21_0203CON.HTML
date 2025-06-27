@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Figura Animada - Movimiento XY</title>
+<style>
+  body { margin: 0; overflow: hidden; background-color: black; }
+</style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script>
+const renderizador = new THREE.WebGLRenderer({antialias: true});
+document.body.appendChild(renderizador.domElement);
+
+let ancho = window.innerWidth;
+let alto = window.innerHeight;
+
+renderizador.setSize(ancho, alto);
+
+const camara = new THREE.PerspectiveCamera(45, ancho/alto, 1, 1000);
+camara.position.x = 16 / 2;
+camara.position.y = 16 / 2;
+camara.position.z = 100;
+
+const escena = new THREE.Scene();
+
+const material = new THREE.LineBasicMaterial({ color: 0xffffff });
+
+// --- Figura A ---
+const PuntosA = [
+  new THREE.Vector3(2,0,0), new THREE.Vector3(1,1,0), new THREE.Vector3(1,3,0),
+  new THREE.Vector3(3,3,0), new THREE.Vector3(3,5,0), new THREE.Vector3(1,5,0),
+  new THREE.Vector3(0,6,0), new THREE.Vector3(0,9,0), new THREE.Vector3(2,10,0),
+  new THREE.Vector3(2,12,0), new THREE.Vector3(5,16,0), new THREE.Vector3(9,16,0),
+  new THREE.Vector3(4,12,0), new THREE.Vector3(4,11,0), new THREE.Vector3(5,11,0),
+  new THREE.Vector3(9,15,0), new THREE.Vector3(11,15,0), new THREE.Vector3(11,12,0),
+  new THREE.Vector3(7,9,0), new THREE.Vector3(7,8,0), new THREE.Vector3(8,8,0),
+  new THREE.Vector3(13,12,0), new THREE.Vector3(15,12,0), new THREE.Vector3(16,11,0),
+  new THREE.Vector3(16,7,0), new THREE.Vector3(15,6,0), new THREE.Vector3(15,4,0),
+  new THREE.Vector3(13,0,0), new THREE.Vector3(8,0,0), new THREE.Vector3(8,1,0),
+  new THREE.Vector3(6,1,0), new THREE.Vector3(6,0,0), new THREE.Vector3(2,0,0)
+];
+
+const GeometriaA = new THREE.BufferGeometry().setFromPoints(PuntosA);
+const LineaA = new THREE.Line(GeometriaA, material);
+escena.add(LineaA);
+
+// --- Figura B ---
+const PuntosB = [
+  new THREE.Vector3(1,5,0), new THREE.Vector3(1,6,0), new THREE.Vector3(0,6,0)
+];
+
+const GeometriaB = new THREE.BufferGeometry().setFromPoints(PuntosB);
+const LineaB = new THREE.Line(GeometriaB, material);
+escena.add(LineaB);
+
+// --- Figura C ---
+const PuntosC = [
+  new THREE.Vector3(3,7,0), new THREE.Vector3(3,9,0), new THREE.Vector3(5,9,0),
+  new THREE.Vector3(5,7,0), new THREE.Vector3(3,7,0)
+];
+
+const GeometriaC = new THREE.BufferGeometry().setFromPoints(PuntosC);
+const LineaC = new THREE.Line(GeometriaC, material);
+escena.add(LineaC);
+
+// --- Animación ---
+LineaA.position.y = 0;
+LineaB.position.y = 0;
+LineaC.position.y = 0;
+
+let i = 0;
+let j = 50;
+let desi = true;
+let desj = true;
+
+function Update() {
+  requestAnimationFrame(Update);
+
+  // Movimiento en X
+  if (j > -50 && desj === true) {
+    LineaA.position.x = j;
+    LineaB.position.x = j;
+    LineaC.position.x = j;
+    j -= 0.5;
+  } else {
+    j = 50;
+  }
+
+  // Movimiento en Y
+  if (i < 10 && desi === true) {
+    LineaA.position.y = i;
+    LineaB.position.y = i;
+    LineaC.position.y = i;
+    i += 0.5;
+  } else {
+    desi = false;
+    if (i > 0 && desi === false) {
+      LineaA.position.y = i;
+      LineaB.position.y = i;
+      LineaC.position.y = i;
+      i -= 0.5;
+    } else {
+      desi = true;
+      i = 0;
+    }
+  }
+
+  renderizador.render(escena, camara);
+}
+
+Update();
+
+// --- Responsive ---
+window.addEventListener('resize', () => {
+  ancho = window.innerWidth;
+  alto = window.innerHeight;
+  renderizador.setSize(ancho, alto);
+  camara.aspect = ancho / alto;
+  camara.updateProjectionMatrix();
+});
+</script>
+</body>
+</html>
